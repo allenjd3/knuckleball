@@ -18,11 +18,21 @@ class SampleTest extends WP_UnitTestCase {
 		$repo->create([
 			'addressable_type' => 'player',
 			'addressable_id' => 1,
+			'address_1' => '2671 Rochester Ave',
+			'city' => 'Hamilton',
+			'state' => 'Ohio',
+			'postal_code' => '45011',
+		]);
+
+		$repo->create([
+			'addressable_type' => 'player',
+			'addressable_id' => 1,
 			'address_1' => '7305 Morris Road',
 			'city' => 'Hamilton',
 			'state' => 'Ohio',
 			'postal_code' => '45011',
 		]);
-		print_r($repo->findAll());
+		$allAddresses = $repo->findAll();
+		print_r($allAddresses->pluck('address_1')->toArray());
 	}
 }

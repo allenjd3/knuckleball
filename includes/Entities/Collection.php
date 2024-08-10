@@ -41,6 +41,11 @@ class Collection
 		$this->items[] = $item;
 	}
 
+	public function pluck(string $columnName)
+	{
+		return $this->map(fn($item, $key) => $item->$columnName);
+	}
+
 	public function toArray()
 	{
 		return $this->items;
