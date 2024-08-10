@@ -19,18 +19,18 @@ class Address implements Entity
 	) {
 	}
 
-	public static function make(object $rawAddress): self
+	public static function make(object $rawData): self
 	{
 		return new self(
-			id: $rawAddress->id,
-			addressable_type: $rawAddress->addressable_type,
-			addressable_id: $rawAddress->addressable_id,
-			address_1: $rawAddress->address_1,
-			address_2: $rawAddress->address_2,
-			city: $rawAddress->city,
-			state: $rawAddress->state,
-			postal_code: $rawAddress->postal_code,
-			published_at: $rawAddress->published_at,
+			id: $rawData->id,
+			addressable_type: $rawData->addressable_type,
+			addressable_id: $rawData->addressable_id,
+			address_1: $rawData->address_1,
+			address_2: $rawData->address_2,
+			city: $rawData->city,
+			state: $rawData->state,
+			postal_code: $rawData->postal_code,
+			published_at: $rawData->published_at,
 		);
 	}
 }

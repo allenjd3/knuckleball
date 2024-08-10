@@ -13,12 +13,12 @@ class Fee implements Entity
 	) {
 	}
 
-	public static function make(object $rawAddress): self
+	public static function make(object $rawData): self
 	{
 		return new self(
-			id: $rawAddress->id,
-			amount: $rawAddress->team_id,
-			published_at: $rawAddress->published_at,
+			id: $rawData->id,
+			amount: $rawData->team_id,
+			published_at: $rawData->published_at,
 		);
 	}
 }

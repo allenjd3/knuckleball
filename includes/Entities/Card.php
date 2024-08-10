@@ -14,13 +14,13 @@ class Card implements Entity
 	) {
 	}
 
-	public static function make(object $rawAddress): self
+	public static function make(object $rawData): self
 	{
 		return new self(
-			id: $rawAddress->id,
-			team_id: $rawAddress->team_id,
-			name: $rawAddress->name,
-			published_at: $rawAddress->published_at,
+			id: $rawData->id,
+			team_id: $rawData->team_id,
+			name: $rawData->name,
+			published_at: $rawData->published_at,
 		);
 	}
 }
