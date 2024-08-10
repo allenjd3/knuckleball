@@ -1,0 +1,11 @@
+{
+  "autoload": {
+    "psr-4": {
+      "Ohio_Tokyo_International_Sea_Monster_Society\\": "includes/"
+    }
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^9.5",
+    "yoast/phpunit-polyfills": "^2.0"
+  }
+}
