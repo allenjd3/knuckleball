@@ -10,6 +10,7 @@ class Card implements Entity
 	    private int $id,
 		private ?int $team_id,
 		public string $name,
+		public int $user_id,
 		public ?string $published_at,
 	) {
 	}
@@ -20,6 +21,7 @@ class Card implements Entity
 			id: $rawData->id,
 			team_id: $rawData->team_id,
 			name: $rawData->name,
+			user_id: $rawData->user_id,
 			published_at: $rawData->published_at,
 		);
 	}

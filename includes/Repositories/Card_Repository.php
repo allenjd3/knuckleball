@@ -4,13 +4,17 @@ namespace Ohio_Tokyo_International_Sea_Monster_Society\Repositories;
 
 use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Card;
 use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Collection;
+use Ohio_Tokyo_International_Sea_Monster_Society\Traits\DbPrefix;
 
 class Card_Repository implements Base_Repository
 {
+	use DbPrefix;
 	private $wpdb;
+	private $tableName = 'cards';
 
-	public function __construct()
-	{
+	public function __construct(
+		private int $userId,
+	) {
 		global $wpdb;
 		$this->wpdb = $wpdb;
 	}
@@ -18,12 +22,17 @@ class Card_Repository implements Base_Repository
 
 	public function create (array $data): bool
 	{
-		return (bool) $this->wpdb->insert('wp_knuckleball_cards', $data);
+		if ($this->userId) {
+			print_r(array_merge($data, ['user_id' => $this->userId]));
+			return (bool) $this->wpdb->insert($this->getTableName(), array_merge($data, ['user_id' => $this->userId]));
+		}
+
+		return false;
 	}
 
 	public function find (int $id): ?Entity
 	{
-		$preparedStatement = $this->wpdb->prepare('select * from wp_knuckball_cards where id = %d', $id);
+		$preparedStatement = $this->wpdb->prepare('select * from ' . $this->getTableName() . ' where id = %d', $id);
 		$result = $this->wpdb->get_row($preparedStatement);
 
 		if ($result) {
@@ -33,10 +42,9 @@ class Card_Repository implements Base_Repository
 		return null;
 	}
 
-	public function findAll(?string $orderBy): Collection
+	public function findAll(?string $orderBy = null): Collection
 	{
-		$preparedStatement = $this->wpdb->prepare('select * from wp_knuckball_cards');
-		$results = $this->wpdb->get_results($preparedStatement);
+		$results = $this->wpdb->get_results('select * from ' . $this->getTableName());
 
 		$cards = Collection::make();
 		foreach($results as $result) {

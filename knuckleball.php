@@ -30,5 +30,8 @@ function knuckleball_autoloader($class_name) {
 		}
 	}
 }
+if ( ! defined( 'WP_KNUCKLEBALL_DB_PREFIX' ) ) {
+	define( 'WP_KNUCKLEBALL_DB_PREFIX', 'knuckleball_' );
+}
 
 \Ohio_Tokyo_International_Sea_Monster_Society\Knuckleball\Knuckleball::init();
