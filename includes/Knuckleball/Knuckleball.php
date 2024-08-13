@@ -10,6 +10,7 @@ class Knuckleball
 		$this->register_endpoints();
 		$this->register_deactivation_hook();
 		$this->register_templates();
+		$this->register_shortcodes();
 	}
 
 	public static function init()
@@ -60,5 +61,15 @@ class Knuckleball
 		}
 
 		return $template;
+	}
+
+	private function register_shortcodes ()
+	{
+		add_shortcode('knuckleball-all-players', [$this, 'all_players']);
+	}
+
+	public function all_players()
+	{
+		return "<div>Hello!</div>";
 	}
 }
