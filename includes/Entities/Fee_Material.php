@@ -10,6 +10,7 @@ class Fee_Material implements Entity
 	    private int $id,
 		private int $fee_id,
 		public string $name,
+		private int $user_id,
 		public ?string $published_at,
 	) {
 	}
@@ -20,6 +21,7 @@ class Fee_Material implements Entity
 			id: $rawData->id,
 			fee_id: $rawData->fee_id,
 			name: $rawData->name,
+			user_id: $rawData->user_id,
 			published_at: $rawData->published_at,
 		);
 	}

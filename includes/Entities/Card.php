@@ -10,7 +10,7 @@ class Card implements Entity
 	    private int $id,
 		private ?int $team_id,
 		public string $name,
-		public int $user_id,
+		private int $user_id,
 		public ?string $published_at,
 	) {
 	}
