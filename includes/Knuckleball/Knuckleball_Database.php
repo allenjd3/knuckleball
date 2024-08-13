@@ -4,7 +4,7 @@ namespace Ohio_Tokyo_International_Sea_Monster_Society\Knuckleball;
 
 class Knuckleball_Database
 {
-	public string $version = "1.0.5";
+	public string $version = "1.0.7";
 
 	public function update_database_schema()
 	{
