@@ -2,11 +2,14 @@
 
 namespace Ohio_Tokyo_International_Sea_Monster_Society\Knuckleball;
 
+use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository;
+
 class Knuckleball
 {
 	public function __construct()
 	{
 		$this->update_database_schema();
+		$this->enqueue_assets();
 		$this->register_endpoints();
 		$this->register_deactivation_hook();
 		$this->register_templates();
@@ -52,11 +55,16 @@ class Knuckleball
 
 	public function player_template($template)
 	{
-		if (get_query_var('player_slug')) {
+		if ($slug = get_query_var('player_slug')) {
+			$player = (new Player_Repository())->findBySlug($slug);
+
+			set_query_var('player', $player);
 			$plugin_template = plugin_dir_path(dirname(__FILE__, 1)) . 'templates/player-template.php';
+
 			if (file_exists($plugin_template)) {
 				return $plugin_template;
 			}
+
 			return $template;
 		}
 
@@ -70,6 +78,17 @@ class Knuckleball
 
 	public function all_players()
 	{
-		return "<div>Hello!</div>";
+		$players = (new Player_Repository())->search($_GET['search'] ?? null);
+		include plugin_dir_path(dirname(__FILE__)) . "templates/players-template.php";
+	}
+
+	public function enqueue_assets ()
+	{
+		add_action('wp_enqueue_scripts', [$this, 'knuckleball_enqueue_styles']);
+	}
+
+	public function knuckleball_enqueue_styles()
+	{
+		wp_enqueue_style('knuckleball-style', plugin_dir_url(dirname(__FILE__)) . "assets/style.css", [], '1.0.0', 'all');
 	}
 }
