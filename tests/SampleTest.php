@@ -11,10 +11,10 @@
 class SampleTest extends WP_UnitTestCase {
 
 	/**
-	 * A single example test.
+	 * @test
 	 */
-	public function test_sample() {
-		$repo = new \Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Card_Repository(1);
+	public function sample() {
+		$repo = new \Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository(1);
 
 		$repo->create([
 			'name' => 'James Allen Rookie',
