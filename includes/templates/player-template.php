@@ -1,15 +1,19 @@
 <?php
-$uri = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-$username = array_pop($uri);
+
+use \Ohio_Tokyo_International_Sea_Monster_Society\Entities\Player;
+
+get_header();
 ?>
 
-<?php get_header(); ?>
+<?php
 
-<h1>
-	Hello World
-</h1>
+/** @var Player $player */
+$player = get_query_var('player');
+?>
+<div>
+	<h3><?= $player->name ?></h3>
+	<img src="<?= $player->getAvatarUrl() ?>" alt="<?= $player->name ?>" class="avatar" />
+</div>
 
 
-<div>This is some stuff for <?php echo esc_html($username) ?></div>
-
-<?php get_footer() ?>
+<?php get_footer(); ?>
