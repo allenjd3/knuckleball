@@ -16,8 +16,12 @@ class Player implements Entity
 	) {
 	}
 
-	public static function make(object $rawData): self
+	public static function make(mixed $rawData): self
 	{
+		if (is_array($rawData)) {
+			$rawData = (object) $rawData;
+		}
+
 		return new self(
 			id: $rawData->id,
 			user_id: $rawData->user_id,
@@ -26,5 +30,15 @@ class Player implements Entity
 			slug: $rawData->slug,
 			published_at: $rawData->published_at,
 		);
+	}
+
+	public function getAvatarUrl()
+	{
+		return get_avatar_url($this->user_id);
+	}
+
+	public function getPath(): string
+	{
+		return get_site_url() . '/players/' . $this->slug;
 	}
 }
