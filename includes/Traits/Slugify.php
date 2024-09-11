@@ -4,19 +4,21 @@ namespace Ohio_Tokyo_International_Sea_Monster_Society\Traits;
 
 trait Slugify
 {
-	public function slugify(array $data, string $key = 'name'): array
+	abstract public function getSlugifyAttribute(): string;
+
+	public function slugify(): self
 	{
-		if (! isset($data[$key])) {
-			throw new \Exception('Cannot slugify empty value');
+		if ($this->slug) {
+			return $this;
 		}
 
-		$slug = strtolower(trim($data[$key]));
+		$slug = strtolower(trim($this->getSlugifyAttribute()));
 		$slug = preg_replace('/[^a-z0-9]+/', '-', $slug);
 		$slug = preg_replace('/-+/', '-', $slug);
 		$slug = trim($slug, '-');
 
-		$data['slug'] = $slug;
-		return $data;
+		$this->slug = $slug;
+		return $this;
 	}
 
 	public function sanitizeInput($data): array

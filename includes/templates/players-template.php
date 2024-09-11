@@ -2,7 +2,6 @@
 use \Ohio_Tokyo_International_Sea_Monster_Society\Entities\Collection;
 use \Ohio_Tokyo_International_Sea_Monster_Society\Entities\Player;
 
-get_header();
 $players ??= new Collection();
 ?>
 
@@ -25,5 +24,3 @@ $players ??= new Collection();
 		</form>
 	</article>
 </div>
-
-<?php get_footer(); ?>

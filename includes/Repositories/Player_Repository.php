@@ -11,7 +11,6 @@ use Ohio_Tokyo_International_Sea_Monster_Society\Traits\Slugify;
 class Player_Repository implements Base_Repository
 {
 	use DbPrefix;
-	use Slugify;
 
 	private $wpdb;
 	private $tableName = 'players';
@@ -25,7 +24,7 @@ class Player_Repository implements Base_Repository
 
 	public function create(array $data): ?Entity
 	{
-		if ($this->wpdb->insert($this->getTableName(), $this->sanitizeInput($data))) {
+		if ($this->wpdb->insert($this->getTableName(), $data)) {
 			return Player::make($data);
 		}
 
@@ -72,8 +71,8 @@ class Player_Repository implements Base_Repository
 			ARRAY_A
 		);
 
+		$players = Collection::make();
 		foreach($results as $result) {
-			$players = Collection::make();
 			$players->push(Player::make($result));
 		}
 

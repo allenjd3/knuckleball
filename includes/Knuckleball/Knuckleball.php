@@ -2,7 +2,9 @@
 
 namespace Ohio_Tokyo_International_Sea_Monster_Society\Knuckleball;
 
+use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Player;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository;
+use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Team_Repository;
 
 class Knuckleball
 {
@@ -29,12 +31,26 @@ class Knuckleball
 	private function register_endpoints()
 	{
 		add_action('init', [$this, 'register_profile_endpoint']);
+		add_action('admin_post_handle_create_player', [$this, 'handle_create_player']);
 		flush_rewrite_rules();
 	}
 
-	public function register_profile_endpoint() {
+	public function register_profile_endpoint()
+	{
 		add_rewrite_rule('^players/([^/]*)/?', 'index.php?player_slug=$matches[1]', 'top');
 		add_rewrite_tag('%player_slug%', '([^&]+)');
+	}
+
+	public function handle_create_player()
+	{
+		$player = Player::make(['name' => ($_POST['name'] ?? null), 'team_id' => $_POST['team_id']]);
+		$player = $player->create(new Player_Repository());
+		if (count($player->errors)) {
+			set_transient('player', $player, 60);
+			return wp_redirect('/players-create');
+		}
+
+		return wp_redirect('/players');
 	}
 
 	private function register_deactivation_hook()
@@ -74,12 +90,19 @@ class Knuckleball
 	private function register_shortcodes ()
 	{
 		add_shortcode('knuckleball-all-players', [$this, 'all_players']);
+		add_shortcode('knuckleball-create-player', [$this, 'create_player']);
 	}
 
 	public function all_players()
 	{
 		$players = (new Player_Repository())->search($_GET['search'] ?? null);
 		include plugin_dir_path(dirname(__FILE__)) . "templates/players-template.php";
+	}
+
+	public function create_player()
+	{
+		$teams = (new Team_Repository())->findAll();
+		include plugin_dir_path(dirname(__FILE__)) . "templates/create-player-template.php";
 	}
 
 	public function enqueue_assets ()

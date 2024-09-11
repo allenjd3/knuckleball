@@ -7,15 +7,19 @@ use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Entity;
 class Team implements Entity
 {
 	public function __construct(
-	    private int $id,
+	    public int $id,
 		public string $name,
-		private int $user_id,
+		private ?int $user_id,
 		public ?string $published_at,
 	) {
 	}
 
-	public static function make(object $rawData): self
+	public static function make(mixed $rawData): self
 	{
+		if (is_array($rawData)) {
+			$rawData = (object) $rawData;
+		}
+
 		return new self(
 			id: $rawData->id,
 			name: $rawData->name,
