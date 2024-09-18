@@ -2,6 +2,7 @@
 
 namespace Ohio_Tokyo_International_Sea_Monster_Society\Knuckleball;
 
+use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Address;
 use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Player;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Team_Repository;
@@ -12,6 +13,7 @@ class Knuckleball
 	{
 		$this->update_database_schema();
 		$this->enqueue_assets();
+		$this->register_roles();
 		$this->register_endpoints();
 		$this->register_deactivation_hook();
 		$this->register_templates();
@@ -32,6 +34,7 @@ class Knuckleball
 	{
 		add_action('init', [$this, 'register_profile_endpoint']);
 		add_action('admin_post_handle_create_player', [$this, 'handle_create_player']);
+//		add_action('admin_post_handle_create_address', [$this, 'handle_create_address']);
 		flush_rewrite_rules();
 	}
 
@@ -44,13 +47,34 @@ class Knuckleball
 	public function handle_create_player()
 	{
 		$player = Player::make(['name' => ($_POST['name'] ?? null), 'team_id' => $_POST['team_id']]);
-		$player = $player->create(new Player_Repository());
+		$player = $player->create();
+
 		if (count($player->errors)) {
 			set_transient('player', $player, 60);
 			return wp_redirect('/players-create');
 		}
 
 		return wp_redirect('/players');
+	}
+
+	public function handle_create_address()
+	{
+		$address = Address::make([
+			'addressable_type' => $_POST['type'],
+			'address_1' => $_POST['address_1'],
+			'address_2' => $_POST['address_2'],
+			'city' => $_POST['city'],
+			'state' => $_POST['state'],
+			'postal_code' => $_POST['postal_code'],
+		]);
+
+		$address = $address->create();
+
+		if (count($address->errors)) {
+			set_transient('address', $address, 60);
+		}
+
+		return wp_redirect('/addresses');
 	}
 
 	private function register_deactivation_hook()
@@ -102,7 +126,12 @@ class Knuckleball
 	public function create_player()
 	{
 		$teams = (new Team_Repository())->findAll();
-		include plugin_dir_path(dirname(__FILE__)) . "templates/create-player-template.php";
+		if (current_user_can('create_knuckleball')) {
+			include plugin_dir_path(dirname(__FILE__)) . "templates/create-player-template.php";
+			return;
+		}
+
+		include plugin_dir_path(dirname(__FILE__)) . "templates/403.php";
 	}
 
 	public function enqueue_assets ()
@@ -113,5 +142,21 @@ class Knuckleball
 	public function knuckleball_enqueue_styles()
 	{
 		wp_enqueue_style('knuckleball-style', plugin_dir_url(dirname(__FILE__)) . "assets/style.css", [], '1.0.0', 'all');
+	}
+
+	private function register_roles()
+	{
+		add_action('init', [$this, 'add_roles']);
+		add_action('admin_init', function () {
+			get_role('administrator')->add_cap('create_knuckleball');
+		});
+	}
+
+	public function add_roles()
+	{
+		add_role('create_players_and_cards', 'Create Players and Cards', [
+			'read' => true,
+			'create_knuckleball' => true,
+		]);
 	}
 }

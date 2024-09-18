@@ -4,13 +4,16 @@ namespace Ohio_Tokyo_International_Sea_Monster_Society\Entities;
 
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Entity;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository;
+use Ohio_Tokyo_International_Sea_Monster_Society\Traits\HasValidation;
 use Ohio_Tokyo_International_Sea_Monster_Society\Traits\Slugify;
 
-class Player implements Entity
+class Player extends Base_Entity
 {
 	use Slugify;
 
-	public array $errors = [];
+	public array $rules = [
+		'name' => 'required',
+	];
 
 	public function __construct(
 	    private ?int $id,
@@ -51,17 +54,7 @@ class Player implements Entity
 		return get_site_url() . '/players/' . $this->slug;
 	}
 
-	private function validate(): bool
-	{
-		if (strlen($this->name) <= 0 || strlen($this->name) > 255 ) {
-			$this->errors['name'] = 'Name must be between 0 and 255 chars';
-			return false;
-		}
-
-		return true;
-	}
-
-	private function toArray(): array
+	public function toArray(): array
 	{
 		return [
 			'id' => $this->id,
@@ -76,19 +69,5 @@ class Player implements Entity
 	public function getSlugifyAttribute(): string
 	{
 		return $this->name;
-	}
-
-	public function create(Player_Repository $repository): ?Entity
-	{
-		if ($this->validate()) {
-			return $repository->create($this->toArray());
-		}
-
-		return $this;
-	}
-
-	public function hasError($key): bool
-	{
-		return array_key_exists($key, $this->errors);
 	}
 }
