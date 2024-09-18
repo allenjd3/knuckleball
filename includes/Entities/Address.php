@@ -2,19 +2,17 @@
 
 namespace Ohio_Tokyo_International_Sea_Monster_Society\Entities;
 
-use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Entity;
-
 class Address extends Base_Entity
 {
 	public function __construct(
-	    private int $id,
-		private string $addressable_type,
-		private int $addressable_id,
-		public string $address_1,
+	    private ?int $id,
+		private ?string $addressable_type,
+		private ?int $addressable_id,
+		public ?string $address_1,
 		public ?string $address_2,
-		public string $city,
-		public string $state,
-		public string $postal_code,
+		public ?string $city,
+		public ?string $state,
+		public ?string $postal_code,
 		public ?string $published_at,
 	) {
 	}
@@ -26,15 +24,15 @@ class Address extends Base_Entity
 		}
 
 		return new self(
-			id: $rawData->id,
-			addressable_type: $rawData->addressable_type,
-			addressable_id: $rawData->addressable_id,
-			address_1: $rawData->address_1,
-			address_2: $rawData->address_2,
-			city: $rawData->city,
-			state: $rawData->state,
-			postal_code: $rawData->postal_code,
-			published_at: $rawData->published_at,
+			id: $rawData->id ?? null,
+			addressable_type: $rawData->addressable_type ?? null,
+			addressable_id: $rawData->addressable_id ?? null,
+			address_1: $rawData->address_1 ?? null,
+			address_2: $rawData->address_2 ?? null,
+			city: $rawData->city ?? null,
+			state: $rawData->state ?? null,
+			postal_code: $rawData->postal_code ?? null,
+			published_at: $rawData->published_at ?? null,
 		);
 	}
 

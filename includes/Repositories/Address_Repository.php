@@ -6,7 +6,7 @@ use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Address;
 use Ohio_Tokyo_International_Sea_Monster_Society\Entities\Collection;
 use Ohio_Tokyo_International_Sea_Monster_Society\Traits\DbPrefix;
 
-class Address_Repository implements Base_Repository
+class Address_Repository implements Base_Repository, AddressContract
 {
 	use DbPrefix;
 	private $wpdb;
@@ -17,9 +17,13 @@ class Address_Repository implements Base_Repository
 		$this->wpdb = $wpdb;
 	}
 
-	public function create(array $data): bool
+	public function create(array $data): ?Entity
 	{
-		return (bool) $this->wpdb->insert($this->getTableName(), $data);
+		if ($this->wpdb->insert($this->getTableName(), $data)) {
+			return Address::make($data);
+		}
+
+		return null;
 	}
 
 	public function find(int $id): ?Entity
@@ -44,5 +48,23 @@ class Address_Repository implements Base_Repository
 		}
 
 		return $addresses;
+	}
+
+	public function getPlayerAddress(int $id): ?Entity
+	{
+		$preparedStatement = $this->wpdb
+			->prepare(
+				'select * from ' . $this->getTableName() . ' where addressable_type = %s and addressable_id = %d',
+				'player',
+				$id
+			);
+
+		$result = $this->wpdb->get_row($preparedStatement);
+
+		if ($result) {
+			return Address::make($result);
+		}
+
+		return null;
 	}
 }

@@ -2,6 +2,9 @@
 
 namespace Ohio_Tokyo_International_Sea_Monster_Society\Entities;
 
+use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Address_Repository;
+use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\AddressContract;
+use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Base_Repository;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Entity;
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Player_Repository;
 use Ohio_Tokyo_International_Sea_Monster_Society\Traits\HasValidation;
@@ -52,6 +55,13 @@ class Player extends Base_Entity
 	public function getPath(): string
 	{
 		return get_site_url() . '/players/' . $this->slug;
+	}
+
+	public function getAddress(?AddressContract $repository = null): ?Entity
+	{
+		$repository ??= new Address_Repository();
+
+		return $repository->getPlayerAddress($this->id);
 	}
 
 	public function toArray(): array

@@ -15,6 +15,7 @@ class Knuckleball
 		$this->enqueue_assets();
 		$this->register_roles();
 		$this->register_endpoints();
+		$this->register_activation_hook();
 		$this->register_deactivation_hook();
 		$this->register_templates();
 		$this->register_shortcodes();
@@ -34,7 +35,7 @@ class Knuckleball
 	{
 		add_action('init', [$this, 'register_profile_endpoint']);
 		add_action('admin_post_handle_create_player', [$this, 'handle_create_player']);
-//		add_action('admin_post_handle_create_address', [$this, 'handle_create_address']);
+		add_action('admin_post_handle_create_address', [$this, 'handle_create_address']);
 		flush_rewrite_rules();
 	}
 
@@ -60,9 +61,9 @@ class Knuckleball
 	public function handle_create_address()
 	{
 		$address = Address::make([
-			'addressable_type' => $_POST['type'],
+			'addressable_type' => $_POST['type'] ?? 'player',
 			'address_1' => $_POST['address_1'],
-			'address_2' => $_POST['address_2'],
+			'address_2' => $_POST['address_2'] ?? '',
 			'city' => $_POST['city'],
 			'state' => $_POST['state'],
 			'postal_code' => $_POST['postal_code'],
@@ -75,6 +76,11 @@ class Knuckleball
 		}
 
 		return wp_redirect('/addresses');
+	}
+
+	private function register_activation_hook()
+	{
+		register_activation_hook(__FILE__, [$this, 'flush_rewrite_rules']);
 	}
 
 	private function register_deactivation_hook()
@@ -115,6 +121,7 @@ class Knuckleball
 	{
 		add_shortcode('knuckleball-all-players', [$this, 'all_players']);
 		add_shortcode('knuckleball-create-player', [$this, 'create_player']);
+		add_shortcode('knuckleball-create-address', [$this, 'create_address']);
 	}
 
 	public function all_players()
@@ -128,6 +135,17 @@ class Knuckleball
 		$teams = (new Team_Repository())->findAll();
 		if (current_user_can('create_knuckleball')) {
 			include plugin_dir_path(dirname(__FILE__)) . "templates/create-player-template.php";
+			return;
+		}
+
+		include plugin_dir_path(dirname(__FILE__)) . "templates/403.php";
+	}
+
+	public function create_address()
+	{
+//		$teams = (new Team_Repository())->findAll();
+		if (current_user_can('create_knuckleball')) {
+			include plugin_dir_path(dirname(__FILE__)) . "templates/create-address-template.php";
 			return;
 		}
 
