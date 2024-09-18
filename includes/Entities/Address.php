@@ -4,7 +4,7 @@ namespace Ohio_Tokyo_International_Sea_Monster_Society\Entities;
 
 use Ohio_Tokyo_International_Sea_Monster_Society\Repositories\Entity;
 
-class Address implements Entity
+class Address extends Base_Entity
 {
 	public function __construct(
 	    private int $id,
@@ -19,8 +19,12 @@ class Address implements Entity
 	) {
 	}
 
-	public static function make(object $rawData): self
+	public static function make(mixed $rawData): self
 	{
+		if (is_array($rawData)) {
+			$rawData = (object) $rawData;
+		}
+
 		return new self(
 			id: $rawData->id,
 			addressable_type: $rawData->addressable_type,
@@ -32,5 +36,20 @@ class Address implements Entity
 			postal_code: $rawData->postal_code,
 			published_at: $rawData->published_at,
 		);
+	}
+
+	public function toArray (): array
+	{
+		return [
+			'id' => $this->id,
+			'addressable_type' => $this->addressable_type,
+			'addressable_id' => $this->addressable_id,
+			'address_1' => $this->address_1,
+			'address_2' => $this->address_2,
+			'city' => $this->city,
+			'state' => $this->state,
+			'postal_code' => $this->postal_code,
+			'published_at' => $this->published_at,
+		];
 	}
 }
